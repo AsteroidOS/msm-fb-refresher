@@ -1,12 +1,12 @@
 /*
  * Copyright (C) 2015 - Florent Revest <revestflo@gmail.com>
  *
- * Raspcopter is free software: you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * Raspcopter is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
@@ -22,6 +22,8 @@
 #include <linux/fb.h>
 #include <assert.h>
 
+// TODO: We should be able to specify which framebuffer must be used and at which frequency the loop should be executed
+
 int main(int argc, char *argv[])
 {
     struct fb_var_screeninfo var;
@@ -30,8 +32,17 @@ int main(int argc, char *argv[])
     setpriority(PRIO_PROCESS, 0, -20);
     assert(fd >= 0);
 
-    while(ioctl(fd, FBIOPAN_DISPLAY, &var) >= 0)
-        usleep(16666);
-    perror("Failed FBIOPAN_DISPLAY");
-    return 1;
+    if(argc > 1 && !strcmp(argv[1], "--loop"))
+    {
+        while(ioctl(fd, FBIOPAN_DISPLAY, &var) >= 0)
+            usleep(16666);
+        perror("Failed FBIOPAN_DISPLAY");
+        return 1;
+    }
+    else if(ioctl(fd, FBIOPAN_DISPLAY, &var) < 0)
+    {
+        perror("Failed FBIOPAN_DISPLAY");
+        return 1;
+    }
+    return 0;
 }
