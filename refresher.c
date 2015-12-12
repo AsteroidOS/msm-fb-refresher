@@ -21,6 +21,9 @@
 #include <sys/resource.h>
 #include <linux/fb.h>
 #include <assert.h>
+#include <string.h>
+#include <sys/ioctl.h>
+#include <unistd.h>
 
 // TODO: We should be able to specify which framebuffer must be used and at which frequency the loop should be executed
 
@@ -31,6 +34,7 @@ int main(int argc, char *argv[])
   
     setpriority(PRIO_PROCESS, 0, -20);
     assert(fd >= 0);
+	assert(ioctl(fd, FBIOGET_VSCREENINFO, &var) >= 0);
 
     if(argc > 1 && !strcmp(argv[1], "--loop"))
     {
