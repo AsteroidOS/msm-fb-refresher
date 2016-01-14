@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
   
     setpriority(PRIO_PROCESS, 0, -20);
     assert(fd >= 0);
-	assert(ioctl(fd, FBIOGET_VSCREENINFO, &var) >= 0);
+    assert(ioctl(fd, FBIOGET_VSCREENINFO, &var) >= 0);
 
     if(argc > 1 && !strcmp(argv[1], "--loop"))
     {
