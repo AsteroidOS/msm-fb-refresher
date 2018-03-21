@@ -29,24 +29,28 @@
 
 int main(int argc, char *argv[])
 {
+    int ret = 0;
     struct fb_var_screeninfo var;
     int fd = open("/dev/fb0", O_RDWR);
   
     setpriority(PRIO_PROCESS, 0, -20);
     assert(fd >= 0);
-    assert(ioctl(fd, FBIOGET_VSCREENINFO, &var) >= 0);
+	assert(ioctl(fd, FBIOGET_VSCREENINFO, &var) >= 0);
 
     if(argc > 1 && !strcmp(argv[1], "--loop"))
     {
         while(ioctl(fd, FBIOPAN_DISPLAY, &var) >= 0)
             usleep(16666);
         perror("Failed FBIOPAN_DISPLAY");
-        return 1;
+        ret = 1;
     }
     else if(ioctl(fd, FBIOPAN_DISPLAY, &var) < 0)
     {
         perror("Failed FBIOPAN_DISPLAY");
-        return 1;
+        ret = 1;
     }
-    return 0;
+
+    close(fd);
+
+    return ret;
 }
