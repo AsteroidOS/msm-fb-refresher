@@ -39,8 +39,10 @@ int main(int argc, char *argv[])
 
     if(argc > 1 && !strcmp(argv[1], "--loop"))
     {
-        while(ioctl(fd, FBIOPAN_DISPLAY, &var) >= 0)
+        while(1) {
+            ioctl(fd, FBIOPAN_DISPLAY, &var);
             usleep(16666);
+        }
         perror("Failed FBIOPAN_DISPLAY");
         ret = 1;
     }
